@@ -1399,6 +1399,12 @@ static void sdram_set_timing_and_control(struct sys_info *sysinfo)
 
 	/* Pre-All to Activate Delay */
 	temp_drt |= (0 << 16);
+	for (i = 0; i < 2 * DIMM_SOCKETS; i++) {
+		if (sysinfo->banks[i] == 8) {
+			temp_drt |= (1 << 16);
+			break;
+		}
+	}
 
 	/* Precharge to Precharge Delay stays at 1 clock */
 	temp_drt |= (0 << 18);
