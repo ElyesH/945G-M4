@@ -23,7 +23,12 @@ ramstage-y += acpi.c
 
 romstage-y += romstage.c
 romstage-y += memmap.c
-romstage-y += raminit.c
+ifeq ($(CONFIG_NORTHBRIDGE_INTEL_SUBTYPE_I945GC),y)
+romstage-y += raminit_i945gc.c
+else
+romstage-y += raminit_i945gm.c
+endif
+
 romstage-y += early_init.c
 romstage-y += errata.c
 romstage-y += debug.c
