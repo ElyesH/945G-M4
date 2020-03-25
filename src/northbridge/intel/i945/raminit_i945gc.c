@@ -638,52 +638,52 @@ static const u32 dq2030[] = {
 };
 
 static const u32 dq2330[] = {
-	0x08070706, 0x0a090908, 0x0d0c0b0a, 0x12100f0e,
-	0x1a181614, 0x22201e1c, 0x2a282624, 0x3934302d,
-	0x0a090908, 0x0c0b0b0a, 0x0e0d0d0c, 0x1211100f,
-	0x19171513, 0x211f1d1b, 0x2d292623, 0x3f393531
+	0x01000000, 0x02010101, 0x08060403, 0x0c0b0a09,
+	0x1512100e, 0x1c1a1816, 0x1f1f1f1e, 0x1f1f1f1f,
+	0x02020101, 0x04040303, 0x07060505, 0x110e0b09,
+	0x18161412, 0x1f1e1c1a, 0x1f1f1f1f, 0x1f1f1f1f
 };
 
 static const u32 cmd2710[] = {
 	0x07060605, 0x0f0d0b09, 0x19171411, 0x1f1f1d1b,
 	0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f,
-	0x1110100f, 0x0f0d0b09, 0x19171411, 0x1f1f1d1b,
+	0x1110100f, 0x14121111, 0x1c1a1816, 0x1f1f1f1e,
 	0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f
 };
 
 static const u32 cmd3210[] = {
-	0x0f0d0b0a, 0x17151311, 0x1f1d1b19, 0x1f1f1f1f,
-	0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f,
-	0x18171615, 0x1f1f1c1a, 0x1f1f1f1f, 0x1f1f1f1f,
-	0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f
+	0x04030302, 0x07060504, 0x0f0d0b09, 0x18151311,
+	0x1f1f1d1b, 0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f,
+	0x09090808, 0x0b0b0a0a, 0x110f0d0c, 0x1b191714,
+	0x1f1f1f1d, 0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f
 };
 
 static const u32 clk2030[] = {
-	0x0e0d0d0c, 0x100f0f0e, 0x100f0e0d, 0x15131211,
+	0x0c0b0b0b, 0x0d0d0c0c, 0x100f0e0d, 0x15131211,
 	0x1d1b1917, 0x2523211f, 0x2a282927, 0x32302e2c,
-	0x17161514, 0x1b1a1918, 0x1f1e1d1c, 0x23222120,
-	0x27262524, 0x2d2b2928, 0x3533312f, 0x3d3b3937
+	0x09090808, 0x0c0b0b0a, 0x100f0e0d, 0x14131211,
+	0x18171615, 0x1e1c1a19, 0x26242220, 0x2e2c2a28
 };
 
 static const u32 ctl3215[] = {
-	0x01010000, 0x03020101, 0x07060504, 0x0b0a0908,
-	0x100f0e0d, 0x14131211, 0x18171615, 0x1c1b1a19,
-	0x05040403, 0x07060605, 0x0a090807, 0x0f0d0c0b,
-	0x14131211, 0x18171615, 0x1c1b1a19, 0x201f1e1d
+	0x07070606, 0x0e0c0a08, 0x17141210, 0x201e1c1a,
+	0x28262422, 0x302e2c2a, 0x38363432, 0x3f3e3c3a,
+	0x13131212, 0x16151414, 0x211d1a18, 0x28262422,
+	0x302e2c2a, 0x38363432, 0x3f3e3c3a, 0x3f3f3f3f
 };
 
 static const u32 ctl3220[] = {
-	0x05040403, 0x07060505, 0x0e0c0a08, 0x1a171411,
-	0x2825221f, 0x35322f2b, 0x3e3e3b38, 0x3e3e3e3e,
-	0x09080807, 0x0b0a0a09, 0x0f0d0c0b, 0x1b171311,
-	0x2825221f, 0x35322f2b, 0x3e3e3b38, 0x3e3e3e3e
+	0x05050404, 0x0b090706, 0x13110f0d, 0x1d1b1915,
+	0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f,
+	0x0e0e0d0d, 0x100f0f0f, 0x1b191310, 0x1f1f1f1d,
+	0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f, 0x1f1f1f1f
 };
 
 static const u32 nc[] = {
-	0x00000000, 0x00000000, 0x00000000, 0x00000000,
-	0x00000000, 0x00000000, 0x00000000, 0x00000000,
-	0x00000000, 0x00000000, 0x00000000, 0x00000000,
-	0x00000000, 0x00000000, 0x00000000, 0x00000000
+	0x13121110, 0x17161514, 0x1b1a1918, 0x1f1e1d1c,
+	0x23222120, 0x27262524, 0x2b2a2928, 0x2f2e2d2c,
+	0x13121110, 0x17161514, 0x1b1a1918, 0x1f1e1d1c,
+	0x23222120, 0x27262524, 0x2b2a2928, 0x2f2e2d2c
 };
 
 enum {
@@ -705,27 +705,28 @@ static const u8 dual_channel_slew_group_lookup[] = {
 	DQ2030, CMD3210, NC,      CTL3215, NC,      CLK2030, NC,     NC,
 
 	DQ2030, CMD3210, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD3210,
-	DQ2030, CMD3210, CTL3215, NC,      CLK2030, NC,      DQ2030, CMD3210,
+	DQ2030, DQ2330,  CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, DQ2330,
 	DQ2030, CMD3210, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD3210,
-	DQ2030, CMD3210, CTL3215, NC,      CLK2030, NC,      DQ2030, CMD2710,
-	DQ2030, CMD3210, CTL3215, NC,      CLK2030, NC,      NC,     NC,
+	DQ2030, DQ2330,  CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, DQ2330,
+	DQ2030, CMD2710, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD2710,
 
 	DQ2030, CMD3210, NC,      CTL3215, NC,      CLK2030, DQ2030, CMD3210,
 	DQ2030, CMD3210, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD3210,
-	DQ2030, CMD3210, NC,      CTL3215, NC,      CLK2030, DQ2030, CMD3210,
-	DQ2030, CMD3210, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD2710,
-	DQ2030, CMD3210, NC,      CTL3215, NC,      CLK2030, NC,     NC,
+	DQ2030, CTL3220, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CTL3220,
+	DQ2030, DQ2330,  CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, DQ2330,
+	DQ2030, CMD2710, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD2710,
 
 	DQ2030, CMD2710, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD3210,
-	DQ2030, CMD2710, CTL3215, NC,      CLK2030, NC,      DQ2030, CMD3210,
-	DQ2030, CMD2710, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD3210,
-	DQ2030, CMD2710, CTL3215, NC,      CLK2030, NC,      DQ2030, CMD2710,
-	DQ2030, CMD2710, CTL3215, NC,      CLK2030, NC,      NC,     NC,
+	DQ2030, DQ2330,  CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, DQ2330,
+	DQ2030, DQ2330,  CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, DQ2330,
+	DQ2030, DQ2330,  CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, DQ2330,
+	DQ2030, CTL3220, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CTL3220,
 
 	NC,     NC,      NC,      CTL3215, NC,      CLK2030, DQ2030, CMD3210,
-	NC,     NC,      CTL3215, NC,      CLK2030, NC,      DQ2030, CMD3210,
-	NC,     NC,      NC,      CTL3215, NC,      CLK2030, DQ2030, CMD3210,
-	NC,     NC,      CTL3215, NC,      CLK2030, CLK2030, DQ2030, CMD2710
+	DQ2030, CMD2710, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD2710,
+	DQ2030, CMD2710, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CMD2710,
+	DQ2030, CTL3220, CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, CTL3220,
+	DQ2030, NC,      CTL3215, CTL3215, CLK2030, CLK2030, DQ2030, NC
 };
 
 static const u8 single_channel_slew_group_lookup[] = {
@@ -789,24 +790,25 @@ static const u8 dual_channel_strength_multiplier[] = {
 	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
 	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
 	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
+	0x44, 0x55, 0x00, 0x00, 0x44, 0x44, 0x44, 0x55,
+	0x44, 0x44, 0x00, 0x00, 0x44, 0x44, 0x44, 0x44,
+	0x44, 0x88, 0x00, 0x00, 0x44, 0x44, 0x44, 0x88,
 	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
 	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
+	0x44, 0x44, 0x00, 0x00, 0x44, 0x44, 0x44, 0x44,
 	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
+	0x44, 0x55, 0x00, 0x00, 0x44, 0x44, 0x44, 0x55,
+	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
+	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
+	0x44, 0x88, 0x00, 0x00, 0x44, 0x44, 0x44, 0x88,
+	0x44, 0x55, 0x00, 0x00, 0x44, 0x44, 0x44, 0x55,
+	0x44, 0x88, 0x00, 0x00, 0x44, 0x44, 0x44, 0x88,
+	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
 	0x44, 0x00, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x00, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x00, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x00, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33
+	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
+	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
+	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
+	0x44, 0x44, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22
 };
 
 static const u8 single_channel_strength_multiplier[] = {
@@ -839,7 +841,8 @@ static const u8 single_channel_strength_multiplier[] = {
 static void sdram_rcomp_buffer_strength_and_slew(struct sys_info *sysinfo)
 {
 	const u8 *strength_multiplier;
-	int idx, dual_channel;
+	int idx0, dual_channel;
+	int idx1 = 0;
 
 	/* Set Strength Multipliers */
 
@@ -848,43 +851,46 @@ static void sdram_rcomp_buffer_strength_and_slew(struct sys_info *sysinfo)
 		printk(BIOS_DEBUG, "Programming Dual Channel RCOMP\n");
 		strength_multiplier = dual_channel_strength_multiplier;
 		dual_channel = 1;
-		idx = 5 * sysinfo->dimm[0] +  sysinfo->dimm[2];
+		idx0 = 5 * sysinfo->dimm[0] +  sysinfo->dimm[1];
+		idx1 = 5 * sysinfo->dimm[2] +  sysinfo->dimm[3];
+		printk(BIOS_DEBUG, "Channel 0 - Table Index: %d\n", idx0);
+		printk(BIOS_DEBUG, "Channel 1 - Table Index: %d\n", idx1);
 	} else {
 		printk(BIOS_DEBUG, "Programming Single Channel RCOMP\n");
 		strength_multiplier = single_channel_strength_multiplier;
 		dual_channel = 0;
-		idx = 5 * sysinfo->dimm[0] + sysinfo->dimm[1];
+		idx0 = 5 * sysinfo->dimm[0] + sysinfo->dimm[1];
+		printk(BIOS_DEBUG, "Table Index: %d\n", idx0);
 	}
 
-	printk(BIOS_DEBUG, "Table Index: %d\n", idx);
+	MCHBAR8(G1SC) = strength_multiplier[idx0 * 8 + 0];
+	MCHBAR8(G2SC) = strength_multiplier[idx0 * 8 + 1];
+	MCHBAR8(G3SC) = strength_multiplier[idx0 * 8 + 2];
+	MCHBAR8(G4SC) = strength_multiplier[idx0 * 8 + 3];
+	MCHBAR8(G5SC) = strength_multiplier[idx0 * 8 + 4];
+	MCHBAR8(G6SC) = strength_multiplier[idx0 * 8 + 5];
+	MCHBAR8(G7SC) = strength_multiplier[idx0 * 8 + 6];
 
-	MCHBAR8(G1SC) = strength_multiplier[idx * 8 + 0];
-	MCHBAR8(G2SC) = strength_multiplier[idx * 8 + 1];
-	MCHBAR8(G3SC) = strength_multiplier[idx * 8 + 2];
-	MCHBAR8(G4SC) = strength_multiplier[idx * 8 + 3];
-	MCHBAR8(G5SC) = strength_multiplier[idx * 8 + 4];
-	MCHBAR8(G6SC) = strength_multiplier[idx * 8 + 5];
-	MCHBAR8(G7SC) = strength_multiplier[idx * 8 + 6];
-	MCHBAR8(G8SC) = strength_multiplier[idx * 8 + 7];
+	MCHBAR8(G8SC) = strength_multiplier[idx1 * 8 + 7]; // Channel 1
 
 	/* Channel 0 */
-	sdram_write_slew_rates(G1SRPUT, slew_group_lookup(dual_channel, idx * 8 + 0));
-	sdram_write_slew_rates(G2SRPUT, slew_group_lookup(dual_channel, idx * 8 + 1));
-	if ((slew_group_lookup(dual_channel, idx * 8 + 2) != nc) &&
+	sdram_write_slew_rates(G1SRPUT, slew_group_lookup(dual_channel, idx0 * 8 + 0));
+	sdram_write_slew_rates(G2SRPUT, slew_group_lookup(dual_channel, idx0 * 8 + 1));
+	if ((slew_group_lookup(dual_channel, idx0 * 8 + 2) != nc) &&
 	    (sysinfo->package == SYSINFO_PACKAGE_STACKED))
 
 		sdram_write_slew_rates(G3SRPUT, ctl3220);
 	else
-		sdram_write_slew_rates(G3SRPUT, slew_group_lookup(dual_channel, idx * 8 + 2));
+		sdram_write_slew_rates(G3SRPUT, slew_group_lookup(dual_channel, idx0 * 8 + 2));
 
-	sdram_write_slew_rates(G4SRPUT, slew_group_lookup(dual_channel, idx * 8 + 3));
-	sdram_write_slew_rates(G5SRPUT, slew_group_lookup(dual_channel, idx * 8 + 4));
-	sdram_write_slew_rates(G6SRPUT, slew_group_lookup(dual_channel, idx * 8 + 5));
+	sdram_write_slew_rates(G4SRPUT, slew_group_lookup(dual_channel, idx0 * 8 + 3));
+	sdram_write_slew_rates(G5SRPUT, slew_group_lookup(dual_channel, idx0 * 8 + 4));
+	sdram_write_slew_rates(G6SRPUT, slew_group_lookup(dual_channel, idx0 * 8 + 5));
 
 	/* Channel 1 */
 	if (sysinfo->dual_channel) {
-		sdram_write_slew_rates(G7SRPUT, slew_group_lookup(dual_channel, idx * 8 + 6));
-		sdram_write_slew_rates(G8SRPUT, slew_group_lookup(dual_channel, idx * 8 + 7));
+		sdram_write_slew_rates(G7SRPUT, slew_group_lookup(dual_channel, idx1 * 8 + 6));
+		sdram_write_slew_rates(G8SRPUT, slew_group_lookup(dual_channel, idx1 * 8 + 7));
 	} else {
 		sdram_write_slew_rates(G7SRPUT, nc);
 		sdram_write_slew_rates(G8SRPUT, nc);
