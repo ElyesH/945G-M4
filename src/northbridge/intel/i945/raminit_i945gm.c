@@ -102,42 +102,28 @@ void sdram_dump_mchbar_registers(void)
 
 static int memclk(void)
 {
-	int offset = CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM) ? 1 : 0;
-
-	switch (((MCHBAR32(CLKCFG) >> 4) & 7) - offset) {
+	switch (((MCHBAR32(CLKCFG) >> 4) & 7) - 1) {
 	case 1: return 400;
 	case 2: return 533;
 	case 3: return 667;
 	default:
 		printk(BIOS_DEBUG, "%s: unknown register value %x\n", __func__,
-			((MCHBAR32(CLKCFG) >> 4) & 7) - offset);
+			((MCHBAR32(CLKCFG) >> 4) & 7) - 1);
 	}
 	return -1;
 }
 
 static u16 fsbclk(void)
 {
-	if (CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM)) {
-		switch (MCHBAR32(CLKCFG) & 7) {
-		case 0: return 400;
-		case 1: return 533;
-		case 3: return 667;
-		default:
-			printk(BIOS_DEBUG, "%s: unknown register value %x\n", __func__,
-				MCHBAR32(CLKCFG) & 7);
-		}
-		return 0xffff;
-	} else if (CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GC)) {
-		switch (MCHBAR32(CLKCFG) & 7) {
-		case 0: return 1066;
-		case 1: return 533;
-		case 2: return 800;
-		default:
-			printk(BIOS_DEBUG, "%s: unknown register value %x\n", __func__,
-				MCHBAR32(CLKCFG) & 7);
-		}
-		return 0xffff;
+	switch (MCHBAR32(CLKCFG) & 7) {
+	case 0: return 400;
+	case 1: return 533;
+	case 3: return 667;
+	default:
+		printk(BIOS_DEBUG, "%s: unknown register value %x\n", __func__,
+			MCHBAR32(CLKCFG) & 7);
 	}
+	return 0xffff;
 }
 
 static int sdram_capabilities_max_supported_memory_frequency(void)
@@ -827,7 +813,6 @@ static const u32 *slew_group_lookup(int dual_channel, int index)
 	return nc;
 }
 
-#if CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM)
 /* Strength multiplier tables */
 static const u8 dual_channel_strength_multiplier[] = {
 	0x44, 0x11, 0x11, 0x11, 0x44, 0x44, 0x44, 0x11,
@@ -882,61 +867,6 @@ static const u8 single_channel_strength_multiplier[] = {
 	0x33, 0x00, 0x00, 0x11, 0x00, 0x44, 0x33, 0x11,
 	0x33, 0x00, 0x11, 0x00, 0x44, 0x44, 0x33, 0x11
 };
-#elif CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GC)
-static const u8 dual_channel_strength_multiplier[] = {
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x00, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x00, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x00, 0x00, 0x00, 0x44, 0x44, 0x44, 0x22,
-	0x44, 0x00, 0x00, 0x00, 0x44, 0x44, 0x44, 0x33
-};
-
-static const u8 single_channel_strength_multiplier[] = {
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x44, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x55, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x44, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x55, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x44, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x88, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x44, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x55, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x55, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x88, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x55, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x88, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x22, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00,
-	0x44, 0x33, 0x00, 0x00, 0x44, 0x44, 0x44, 0x00
-};
-#endif
 
 static void sdram_rcomp_buffer_strength_and_slew(struct sys_info *sysinfo)
 {
@@ -1013,24 +943,13 @@ static void sdram_program_dll_timings(struct sys_info *sysinfo)
 	MCHBAR16(DQSMT) |= (1 << 13) | (0xc << 0);
 
 	/* We drive both channels with the same speed */
-	if (CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM)) {
-		switch (sysinfo->memory_frequency) {
-		case 400:
-			channeldll = 0x26262626; break;
-		case 533:
-			channeldll = 0x22222222; break;
-		case 667:
-			channeldll = 0x11111111; break;
-		}
-	} else if (CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GC)) {
-		switch (sysinfo->memory_frequency) {
-		case 400:
-			channeldll = 0x33333333; break;
-		case 533:
-			channeldll = 0x24242424; break;
-		case 667:
-			channeldll = 0x25252525; break;
-		}
+	switch (sysinfo->memory_frequency) {
+	case 400:
+		channeldll = 0x26262626; break;
+	case 533:
+		channeldll = 0x22222222; break;
+	case 667:
+		channeldll = 0x11111111; break;
 	}
 
 	for (i = 0; i < 4; i++) {
@@ -1038,10 +957,6 @@ static void sdram_program_dll_timings(struct sys_info *sysinfo)
 		MCHBAR32(C0R0B00DQST + (i * 0x10) + 4) = channeldll;
 		MCHBAR32(C1R0B00DQST + (i * 0x10) + 0) = channeldll;
 		MCHBAR32(C1R0B00DQST + (i * 0x10) + 4) = channeldll;
-		if (CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GC)) {
-			MCHBAR8(C0R0B00DQST + (i * 0x10) + 8) = channeldll & 0xff;
-			MCHBAR8(C1R0B00DQST + (i * 0x10) + 8) = channeldll & 0xff;
-		}
 	}
 }
 
@@ -1758,7 +1673,6 @@ static void sdram_program_memory_frequency(struct sys_info *sysinfo)
 {
 	u32 clkcfg;
 	u8 reg8;
-	u8 offset = CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM) ? 1 : 0;
 
 	printk(BIOS_DEBUG, "Setting Memory Frequency... ");
 
@@ -1781,11 +1695,11 @@ static void sdram_program_memory_frequency(struct sys_info *sysinfo)
 
 	switch (sysinfo->memory_frequency) {
 	case 400:
-		clkcfg |= ((1 + offset) << 4); break;
+		clkcfg |= (2 << 4); break;
 	case 533:
-		clkcfg |= ((2 + offset) << 4); break;
+		clkcfg |= (3 << 4); break;
 	case 667:
-		clkcfg |= ((3 + offset) << 4); break;
+		clkcfg |= (4 << 4); break;
 	default:
 		die("Target Memory Frequency Error");
 	}
@@ -1843,7 +1757,6 @@ static void sdram_program_clock_crossing(void)
 	/**
 	 * We add the indices according to our clocks from CLKCFG.
 	 */
-#if CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM)
 	static const u32 data_clock_crossing[] = {
 		0x00100401, 0x00000000, /* DDR400 FSB400 */
 		0xffffffff, 0xffffffff, /*  nonexistent  */
@@ -1888,52 +1801,6 @@ static void sdram_program_clock_crossing(void)
 		0xffffffff, 0xffffffff, /*  nonexistent  */
 	};
 
-#elif CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GC)
-	/* i945 G/P */
-	static const u32 data_clock_crossing[] = {
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-
-		0x10080201, 0x00000000,	/* DDR400 FSB533 */
-		0x00100401, 0x00000000, /* DDR533 FSB533 */
-		0x00010402, 0x00000000, /* DDR667 FSB533 - fake values */
-
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-
-		0x04020108, 0x00000000, /* DDR400 FSB800 */
-		0x00020108, 0x00000000, /* DDR533 FSB800 */
-		0x00080201, 0x00000000, /* DDR667 FSB800 */
-
-		0x00010402, 0x00000000, /* DDR400 FSB1066 */
-		0x04020108, 0x00000000, /* DDR533 FSB1066 */
-		0x08040110, 0x00000000, /* DDR667 FSB1066 */
-	};
-
-	static const u32 command_clock_crossing[] = {
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-
-		0x00010800, 0x00000402,	/* DDR400 FSB533 */
-		0x01000400, 0x00000200, /* DDR533 FSB533 */
-		0x00020904, 0x00000000, /* DDR667 FSB533 - fake values */
-
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-		0xffffffff, 0xffffffff, /*  nonexistent  */
-
-		0x02010804, 0x00000000, /* DDR400 FSB800 */
-		0x00010402, 0x00000000, /* DDR533 FSB800 */
-		0x04020130, 0x00000008, /* DDR667 FSB800 */
-
-		0x00020904, 0x00000000, /* DDR400 FSB1066 */
-		0x02010804, 0x00000000, /* DDR533 FSB1066 */
-		0x180601c0, 0x00000020, /* DDR667 FSB1066 */
-	};
-#endif
 
 	printk(BIOS_DEBUG, "Programming Clock Crossing...");
 
@@ -2160,19 +2027,17 @@ static void sdram_power_management(struct sys_info *sysinfo)
 	reg32 |= (1 << 12) | (1 << 11);
 	MCHBAR32(C1DRC1) = reg32;
 
-	if (CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM)) {
-		if (i945_silicon_revision() > 1) {
-			/* FIXME bits 5 and 0 only if PCIe graphics is disabled */
-			u16 peg_bits = (1 << 5) | (1 << 0);
+	if (i945_silicon_revision() > 1) {
+		/* FIXME bits 5 and 0 only if PCIe graphics is disabled */
+		u16 peg_bits = (1 << 5) | (1 << 0);
 
-			MCHBAR16(UPMC1) = 0x1010 | peg_bits;
-		} else {
-			/* FIXME bits 5 and 0 only if PCIe graphics is disabled */
-			u16 peg_bits = (1 << 5) | (1 << 0);
+		MCHBAR16(UPMC1) = 0x1010 | peg_bits;
+	} else {
+		/* FIXME bits 5 and 0 only if PCIe graphics is disabled */
+		u16 peg_bits = (1 << 5) | (1 << 0);
 
-			/* Rev 0 and 1 */
-			MCHBAR16(UPMC1) = 0x0010 | peg_bits;
-		}
+		/* Rev 0 and 1 */
+		MCHBAR16(UPMC1) = 0x0010 | peg_bits;
 	}
 
 	reg16 = MCHBAR16(UPMC2);
@@ -2478,22 +2343,17 @@ static void sdram_enable_memory_clocks(struct sys_info *sysinfo)
 {
 	u8 clocks[2] = { 0, 0 };
 
-#if CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM)
-#define CLOCKS_WIDTH 2
-#elif CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GC)
-#define CLOCKS_WIDTH 3
-#endif
 	if (sysinfo->dimm[0] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[0] |= (1 << CLOCKS_WIDTH)-1;
+		clocks[0] |= (1 << 2) - 1;
 
 	if (sysinfo->dimm[1] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[0] |= ((1 << CLOCKS_WIDTH)-1) << CLOCKS_WIDTH;
+		clocks[0] |= ((1 << 2) - 1) << 2;
 
 	if (sysinfo->dimm[2] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[1] |= (1 << CLOCKS_WIDTH)-1;
+		clocks[1] |= (1 << 2) - 1;
 
 	if (sysinfo->dimm[3] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[1] |= ((1 << CLOCKS_WIDTH)-1) << CLOCKS_WIDTH;
+		clocks[1] |= ((1 << 2)-1) << 2;
 
 #if CONFIG(OVERRIDE_CLOCK_DISABLE)
 	/* Usually system firmware turns off system memory clock signals
@@ -2730,12 +2590,8 @@ void sdram_initialize(int boot_path, const u8 *spd_addresses)
 
 	/*
 	 * Program Graphics Frequency
-	 * Set core display and render clock on 945GC to the max
 	 */
-	if (CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM))
-		sdram_program_graphics_frequency(&sysinfo);
-	else
-		pci_write_config16(PCI_DEV(0, 2, 0), GCFC, 0x0534);
+	sdram_program_graphics_frequency(&sysinfo);
 
 	/* Program System Memory Frequency */
 	sdram_program_memory_frequency(&sysinfo);
