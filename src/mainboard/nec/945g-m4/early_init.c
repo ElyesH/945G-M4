@@ -30,13 +30,13 @@
 
 void bootblock_mainboard_early_init(void)
 {
-/*	pnp_enter_conf_state(DUMMY_DEV);
+	pnp_enter_conf_state(DUMMY_DEV);
 	pnp_write_config(DUMMY_DEV, 0x24, 0x44);
 	pnp_write_config(DUMMY_DEV, 0x29, 0x05);
 	pnp_write_config(DUMMY_DEV, 0x2c, 0x82);
 	pnp_write_config(DUMMY_DEV, 0x2d, 0x20);
 	pnp_exit_conf_state(DUMMY_DEV);
-*/
+
 	winbond_enable_serial(SERIAL_DEV, CONFIG_TTYS0_BASE);
 /*
 	pnp_enter_conf_state(ACPI_DEV);
