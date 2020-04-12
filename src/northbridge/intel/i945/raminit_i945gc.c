@@ -425,6 +425,9 @@ static void gather_common_timing(struct sys_info *sysinfo, struct timings *saved
 	if (!dimm_mask)
 		die("No memory installed.\n");
 
+	if (sdram_capabilities_dual_channel() && (dimm_mask == 3 || dimm_mask == 0xc))
+		printk(BIOS_INFO, "Dual Channel supported, but populated in Single mode!\n");
+
 	if (!(dimm_mask & ((1 << DIMM_SOCKETS) - 1)))
 		/* FIXME: does not boot in this case */
 		printk(BIOS_INFO, "Channel 0 has no memory populated.\n");
