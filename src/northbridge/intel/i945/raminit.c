@@ -2146,7 +2146,7 @@ static void sdram_power_management(struct sys_info *sysinfo)
 	u8 reg8;
 	u16 reg16;
 	u32 reg32;
-	int integrated_graphics = 1;
+	int integrated_graphics;
 	int i;
 
 	reg32 = MCHBAR32(C0DRT2);
@@ -2302,6 +2302,7 @@ static void sdram_power_management(struct sys_info *sysinfo)
 	reg8 |= (1 << 2);
 	pci_write_config8(PCI_DEV(0, 0x2, 0), 0xc1, reg8);
 
+	integrated_graphics = pci_read_config16(PCI_DEV(0, 0x00, 0), GGC) & 2;
 #ifdef C2_SELF_REFRESH_DISABLE
 
 	if (integrated_graphics) {
