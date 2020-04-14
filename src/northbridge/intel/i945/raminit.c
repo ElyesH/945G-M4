@@ -2146,8 +2146,8 @@ static void sdram_power_management(struct sys_info *sysinfo)
 	u8 reg8;
 	u16 reg16;
 	u32 reg32;
+
 	int integrated_graphics;
-	int i;
 
 	reg32 = MCHBAR32(C0DRT2);
 	reg32 &= 0xffffff00;
@@ -2192,11 +2192,6 @@ static void sdram_power_management(struct sys_info *sysinfo)
 	MCHBAR16(UPMC2) = reg16;
 
 	MCHBAR32(UPMC3) = 0x000f06ff;
-
-	for (i = 0; i < 5; i++) {
-		MCHBAR32(UPMC3) &= ~(1 << 16);
-		MCHBAR32(UPMC3) |= (1 << 16);
-	}
 
 	MCHBAR32(GIPMC1) = 0x8000000c;
 
