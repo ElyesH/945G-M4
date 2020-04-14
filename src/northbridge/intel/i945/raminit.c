@@ -2715,13 +2715,12 @@ static void sdram_init_complete(void)
 
 static void sdram_setup_processor_side(void)
 {
-	if (i945_silicon_revision() == 0)
+	if (i945_silicon_revision() == 0) {
 		MCHBAR32(FSBPMC3) |= (1 << 2);
+		MCHBAR32(SLPCTL) |= (1 << 8);
+	}
 
 	MCHBAR8(0xb00) |= 1;
-
-	if (i945_silicon_revision() == 0)
-		MCHBAR32(SLPCTL) |= (1 << 8);
 }
 
 /**
