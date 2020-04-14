@@ -2270,7 +2270,7 @@ static void sdram_power_management(struct sys_info *sysinfo)
 	MCHBAR32(FSBPMC3) &= ~(1 << 13);
 
 	reg32 = MCHBAR32(FSBPMC4);
-	reg32 &= ~(3 << 24);
+	reg32 &= ~(1 << 24);
 	reg32 |= (2 << 24);
 	MCHBAR32(FSBPMC4) = reg32;
 
@@ -2278,12 +2278,8 @@ static void sdram_power_management(struct sys_info *sysinfo)
 
 	MCHBAR32(FSBPMC4) |= (1 << 5);
 
-	if ((i945_silicon_revision() < 2)) { /* || cpuid() = 0x6e8 */
-		/* stepping 0 and 1 or CPUID 6e8 */
-		MCHBAR32(FSBPMC4) &= ~(1 << 4);
-	} else {
+	if (i945_silicon_revision() > 1)
 		MCHBAR32(FSBPMC4) |= (1 << 4);
-	}
 
 	reg8 = pci_read_config8(PCI_DEV(0, 0x0, 0), 0xfc);
 	reg8 |= (1 << 4);
@@ -2320,7 +2316,7 @@ static void sdram_power_management(struct sys_info *sysinfo)
 #endif
 
 	reg32 = MCHBAR32(PMCFG);
-	reg32 &= ~(3 << 17);
+	reg32 &= ~(1 << 17);
 	reg32 |= (2 << 17);
 	MCHBAR32(PMCFG) = reg32;
 
