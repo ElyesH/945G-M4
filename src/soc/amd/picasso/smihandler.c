@@ -26,6 +26,7 @@
 #include <soc/southbridge.h>
 #include <amdblocks/acpimmio.h>
 #include <amdblocks/acpi.h>
+#include <amdblocks/psp.h>
 #include <elog.h>
 
 /* bits in smm_io_trap   */
@@ -125,6 +126,9 @@ static void sb_apmc_smi_handler(void)
 		if (CONFIG(SMMSTORE))
 			southbridge_smi_store();
 		break;
+	case APM_CNT_SMMINFO:
+		psp_notify_smm();
+		break;
 	}
 
 	mainboard_smi_apmc(cmd);
@@ -215,6 +219,8 @@ static void sb_slp_typ_handler(void)
 						ELOG_SLEEP_PENDING_GPE0_WAKE,
 						reg32);
 		} /* if (CONFIG(ELOG_GSMI)) */
+
+		psp_notify_sx_info(slp_typ);
 
 		/*
 		 * An IO cycle is required to trigger the STPCLK/STPGNT

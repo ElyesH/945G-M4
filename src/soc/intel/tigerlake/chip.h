@@ -118,14 +118,14 @@ struct soc_intel_tigerlake_config {
 		L1_SS_L1_2,
 	} PcieRpL1Substates[CONFIG_MAX_ROOT_PORTS];
 
+	/* PCIe LTR: Enable (1) / Disable (0) */
+	uint8_t PcieRpLtrEnable[CONFIG_MAX_ROOT_PORTS];
+
+	/* PCIE RP Advanced Error Report: Enable (1) / Disable (0) */
+	uint8_t PcieRpAdvancedErrorReporting[CONFIG_MAX_ROOT_PORTS];
+
 	/* SMBus */
 	uint8_t SmbusEnable;
-
-	/* eMMC and SD */
-	uint8_t ScsEmmcHs400Enabled;
-
-	/* Enable if SD Card Power Enable Signal is Active High */
-	uint8_t SdCardPowerEnableActiveHigh;
 
 	/* Integrated Sensor */
 	uint8_t PchIshEnable;
@@ -203,9 +203,6 @@ struct soc_intel_tigerlake_config {
 		DEBUG_INTERFACE_SERIAL_IO = (1 << 4),
 		DEBUG_INTERFACE_TRACEHUB = (1 << 5),
 	} debug_interface_flag;
-
-	/* GPIO SD card detect pin */
-	unsigned int sdcard_cd_gpio;
 
 	/* Enable Pch iSCLK */
 	uint8_t pch_isclk;

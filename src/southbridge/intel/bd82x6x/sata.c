@@ -28,6 +28,65 @@ static inline void sir_write(struct device *dev, int idx, u32 value)
 	pci_write_config32(dev, SATA_SIRD, value);
 }
 
+static void sata_read_resources(struct device *dev)
+{
+	struct resource *res;
+
+	pci_dev_read_resources(dev);
+
+	/* Assign fixed resources for IDE legacy mode */
+
+	u8 sata_mode = 0;
+	get_option(&sata_mode, "sata_mode");
+	if (sata_mode != 2)
+		return;
+
+	res = find_resource(dev, PCI_BASE_ADDRESS_0);
+	if (res) {
+		res->base = 0x1f0;
+		res->size = 8;
+		res->flags = IORESOURCE_IO | IORESOURCE_ASSIGNED | IORESOURCE_FIXED;
+	}
+
+	res = find_resource(dev, PCI_BASE_ADDRESS_1);
+	if (res) {
+		res->base = 0x3f4;
+		res->size = 4;
+		res->flags = IORESOURCE_IO | IORESOURCE_ASSIGNED | IORESOURCE_FIXED;
+	}
+
+	res = find_resource(dev, PCI_BASE_ADDRESS_2);
+	if (res) {
+		res->base = 0x170;
+		res->size = 8;
+		res->flags = IORESOURCE_IO | IORESOURCE_ASSIGNED | IORESOURCE_FIXED;
+	}
+
+	res = find_resource(dev, PCI_BASE_ADDRESS_3);
+	if (res) {
+		res->base = 0x374;
+		res->size = 4;
+		res->flags = IORESOURCE_IO | IORESOURCE_ASSIGNED | IORESOURCE_FIXED;
+	}
+}
+
+static void sata_set_resources(struct device *dev)
+{
+	/* work around bug in pci_dev_set_resources(), it bails out on FIXED */
+	u8 sata_mode = 0;
+	get_option(&sata_mode, "sata_mode");
+	if (sata_mode == 2) {
+		unsigned int i;
+		for (i = PCI_BASE_ADDRESS_0; i <= PCI_BASE_ADDRESS_3; i += 4) {
+			struct resource *const res = find_resource(dev, i);
+			if (res)
+				res->flags &= ~IORESOURCE_FIXED;
+		}
+	}
+
+	pci_dev_set_resources(dev);
+}
+
 static void sata_init(struct device *dev)
 {
 	u32 reg32;
@@ -112,38 +171,30 @@ static void sata_init(struct device *dev)
 		write32(abar + 0xa0, reg32);
 	} else {
 	        /* IDE */
-		printk(BIOS_DEBUG, "SATA: Controller in plain mode.\n");
 
 		/* Without AHCI BAR no memory decoding */
 		reg16 = pci_read_config16(dev, PCI_COMMAND);
 		reg16 &= ~PCI_COMMAND_MEMORY;
 		pci_write_config16(dev, PCI_COMMAND, reg16);
 
-		/* Native mode capable on both primary and secondary (0xa)
-		 * or'ed with enabled (0x50) = 0xf
-		 */
-		pci_write_config8(dev, 0x09, 0x8f);
+		if (sata_mode == 1) {
+			/* Native mode on both primary and secondary. */
+			pci_or_config8(dev, 0x09, 0x05);
+			printk(BIOS_DEBUG, "SATA: Controller in IDE compat mode.\n");
+		} else {
+			/* Legacy mode on both primary and secondary. */
+			pci_update_config8(dev, 0x09, ~0x05, 0x00);
+			printk(BIOS_DEBUG, "SATA: Controller in IDE legacy mode.\n");
+		}
 
-		/* Set timings */
-		pci_write_config16(dev, IDE_TIM_PRI, IDE_DECODE_ENABLE |
-				IDE_ISP_3_CLOCKS | IDE_RCT_1_CLOCKS |
-				IDE_PPE0 | IDE_IE0 | IDE_TIME0);
-		pci_write_config16(dev, IDE_TIM_SEC, IDE_DECODE_ENABLE |
-				IDE_SITRE | IDE_ISP_3_CLOCKS |
-				IDE_RCT_1_CLOCKS | IDE_IE0 | IDE_TIME0);
+		/* Enable I/O decoding */
+		pci_write_config16(dev, IDE_TIM_PRI, IDE_DECODE_ENABLE);
+		pci_write_config16(dev, IDE_TIM_SEC, IDE_DECODE_ENABLE);
 
-		/* Sync DMA */
-		pci_write_config16(dev, IDE_SDMA_CNT, IDE_SSDE0 | IDE_PSDE0);
-		pci_write_config16(dev, IDE_SDMA_TIM, 0x0201);
-
-		/* Set IDE I/O Configuration */
-		reg32 = SIG_MODE_PRI_NORMAL | FAST_PCB1 | FAST_PCB0 | PCB1 | PCB0;
-		pci_write_config32(dev, IDE_CONFIG, reg32);
-
-		/* Port enable */
+		/* Port enable + OOB retry mode */
 		reg16 = pci_read_config16(dev, 0x92);
 		reg16 &= ~0x3f;
-		reg16 |= config->sata_port_map;
+		reg16 |= config->sata_port_map | 0x8000;
 		pci_write_config16(dev, 0x92, reg16);
 
 		/* SATA Initialization register */
@@ -234,8 +285,8 @@ static struct pci_operations sata_pci_ops = {
 };
 
 static struct device_operations sata_ops = {
-	.read_resources		= pci_dev_read_resources,
-	.set_resources		= pci_dev_set_resources,
+	.read_resources		= sata_read_resources,
+	.set_resources		= sata_set_resources,
 	.enable_resources	= pci_dev_enable_resources,
 	.acpi_fill_ssdt		= sata_fill_ssdt,
 	.init			= sata_init,

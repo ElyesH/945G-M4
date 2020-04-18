@@ -102,6 +102,7 @@ static void dram_find_spds_ddr3(spd_raw_data *spd, ramctr_timing *ctrl)
 {
 	int dimms = 0, ch_dimms;
 	int channel, slot, spd_slot;
+	bool can_use_ecc = ctrl->ecc_supported;
 	dimm_info *dimm = &ctrl->info;
 
 	memset (ctrl->rankmap, 0, sizeof(ctrl->rankmap));
@@ -173,6 +174,9 @@ static void dram_find_spds_ddr3(spd_raw_data *spd, ramctr_timing *ctrl)
 
 			ctrl->channel_size_mb[channel] += dimm->dimm[channel][slot].size_mb;
 
+			if (!dimm->dimm[channel][slot].flags.is_ecc)
+				can_use_ecc = false;
+
 			ctrl->auto_self_refresh &= dimm->dimm[channel][slot].flags.asr;
 
 			ctrl->extended_temperature_range &=
@@ -204,6 +208,14 @@ static void dram_find_spds_ddr3(spd_raw_data *spd, ramctr_timing *ctrl)
 		}
 	}
 
+	if (ctrl->ecc_forced || CONFIG(RAMINIT_ENABLE_ECC))
+		ctrl->ecc_enabled = can_use_ecc;
+	if (ctrl->ecc_forced && !ctrl->ecc_enabled)
+		die("ECC mode forced but non-ECC DIMM installed!");
+	printk(BIOS_DEBUG, "ECC is %s\n", ctrl->ecc_enabled  ? "enabled" : "disabled");
+
+	ctrl->lanes = ctrl->ecc_enabled ? 9 : 8;
+
 	if (!dimms)
 		die("No DIMMs were found");
 }
@@ -212,6 +224,23 @@ static void save_timings(ramctr_timing *ctrl)
 {
 	/* Save the MRC S3 restore data to cbmem */
 	mrc_cache_stash_data(MRC_TRAINING_DATA, MRC_CACHE_VERSION, ctrl, sizeof(*ctrl));
+}
+
+static void reinit_ctrl(ramctr_timing *ctrl, int min_tck, const u32 cpuid)
+{
+	/* Reset internal state */
+	memset(ctrl, 0, sizeof(*ctrl));
+	ctrl->tCK = min_tck;
+
+	/* Get architecture */
+	ctrl->cpu = cpuid;
+
+	/* Get ECC support and mode */
+	ctrl->ecc_forced = get_host_ecc_forced();
+	ctrl->ecc_supported = ctrl->ecc_forced || get_host_ecc_cap();
+	printk(BIOS_DEBUG, "ECC supported: %s ECC forced: %s\n",
+			ctrl->ecc_supported ? "yes" : "no",
+			ctrl->ecc_forced ? "yes" : "no");
 }
 
 static void init_dram_ddr3(int min_tck, int s3resume, const u32 cpuid)
@@ -300,11 +329,10 @@ static void init_dram_ddr3(int min_tck, int s3resume, const u32 cpuid)
 	}
 	if (!fast_boot) {
 		/* Reset internal state */
-		memset(&ctrl, 0, sizeof(ctrl));
-		ctrl.tCK = min_tck;
+		reinit_ctrl(&ctrl, min_tck, cpuid);
 
-		/* Get architecture */
-		ctrl.cpu = cpuid;
+		printk(BIOS_INFO, "ECC RAM %s.\n", ctrl.ecc_forced ? "required" :
+			ctrl.ecc_supported ? "supported" : "unsupported");
 
 		/* Get DDR3 SPD data */
 		memset(spds, 0, sizeof(spds));
@@ -320,11 +348,7 @@ static void init_dram_ddr3(int min_tck, int s3resume, const u32 cpuid)
 		printram("Disable failing channel.\n");
 
 		/* Reset internal state */
-		memset(&ctrl, 0, sizeof(ctrl));
-		ctrl.tCK = min_tck;
-
-		/* Get architecture */
-		ctrl.cpu = cpuid;
+		reinit_ctrl(&ctrl, min_tck, cpuid);
 
 		/* Reset DDR3 frequency */
 		dram_find_spds_ddr3(spds, &ctrl);
