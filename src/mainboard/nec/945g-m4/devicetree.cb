@@ -36,7 +36,7 @@ chip northbridge/intel/i945
 			register "gen1_dec" = "0x00fc0291"
 			register "gen2_dec" = "0x00fc4701" # TPM ?
 
-			device pci 1b.0 off end	# HD Audio [8086:27d8]
+      device pci 1b.0 off end	# HD Audio [8086:27d8]
 			device pci 1c.0 on end	# PCIe port 1 [8086:27d0]
 			device pci 1c.1 on end	# PCIe port 2 [8086:27d2]
 			device pci 1c.2 off end	# PCIe port 3 [8086:27d4]

@@ -1377,12 +1377,14 @@ static void sdram_set_timing_and_control(struct sys_info *sysinfo)
 
 	/* Pre-All to Activate Delay */
 	temp_drt |= (0 << 16);
+
 	for (i = 0; i < 2 * DIMM_SOCKETS; i++) {
 		if (sysinfo->banks[i] == 8) {
 			temp_drt |= (1 << 16);
 			break;
 		}
 	}
+
 
 	/* Precharge to Precharge Delay stays at 1 clock */
 	temp_drt |= (0 << 18);
@@ -2359,17 +2361,18 @@ static void sdram_enable_memory_clocks(struct sys_info *sysinfo)
 {
 	u8 clocks[2] = { 0, 0 };
 
+#define CLOCKS_WIDTH 2
 	if (sysinfo->dimm[0] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[0] |= (1 << 2) - 1;
+		clocks[0] |= (1 << CLOCKS_WIDTH) - 1;
 
 	if (sysinfo->dimm[1] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[0] |= ((1 << 2) - 1) << 2;
+		clocks[0] |= ((1 << CLOCKS_WIDTH) - 1) << CLOCKS_WIDTH;
 
 	if (sysinfo->dimm[2] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[1] |= (1 << 2) - 1;
+		clocks[1] |= (1 << CLOCKS_WIDTH) - 1;
 
 	if (sysinfo->dimm[3] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[1] |= ((1 << 2)-1) << 2;
+		clocks[1] |= ((1 << CLOCKS_WIDTH)-1) << CLOCKS_WIDTH;
 
 #if CONFIG(OVERRIDE_CLOCK_DISABLE)
 	/* Usually system firmware turns off system memory clock signals to unused SO-DIMM slots

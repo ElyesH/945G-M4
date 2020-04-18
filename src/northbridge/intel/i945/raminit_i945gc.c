@@ -1,16 +1,5 @@
-/*
- * This file is part of the coreboot project.
- *
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- */
+/* SPDX-License-Identifier: GPL-2.0-only */
+/* This file is part of the coreboot project. */
 
 #include <console/console.h>
 #include <delay.h>
@@ -435,6 +424,9 @@ static void gather_common_timing(struct sys_info *sysinfo, struct timings *saved
 	}
 	if (!dimm_mask)
 		die("No memory installed.\n");
+
+	if (sdram_capabilities_dual_channel() && (dimm_mask == 3 || dimm_mask == 0xc))
+		printk(BIOS_INFO, "Dual Channel supported, but populated in Single mode!\n");
 
 	if (!(dimm_mask & ((1 << DIMM_SOCKETS) - 1)))
 		/* FIXME: does not boot in this case */
@@ -917,9 +909,9 @@ static void sdram_program_dll_timings(struct sys_info *sysinfo)
 	for (i = 0; i < 4; i++) {
 		MCHBAR32(C0R0B00DQST + (i * 0x10) + 0) = channeldll;
 		MCHBAR32(C0R0B00DQST + (i * 0x10) + 4) = channeldll;
-		MCHBAR8(C0R0B00DQST + (i * 0x10) + 8) = channeldll & 0xff;
 		MCHBAR32(C1R0B00DQST + (i * 0x10) + 0) = channeldll;
 		MCHBAR32(C1R0B00DQST + (i * 0x10) + 4) = channeldll;
+		MCHBAR8(C0R0B00DQST + (i * 0x10) + 8) = channeldll & 0xff;
 		MCHBAR8(C1R0B00DQST + (i * 0x10) + 8) = channeldll & 0xff;
 	}
 }
@@ -1365,6 +1357,13 @@ static void sdram_set_timing_and_control(struct sys_info *sysinfo)
 
 	/* Pre-All to Activate Delay */
 	temp_drt |= (0 << 16);
+
+	for (i = 0; i < 2 * DIMM_SOCKETS; i++) {
+		if (sysinfo->banks[i] == 8) {
+			temp_drt |= (1 << 16);
+			break;
+		}
+	}
 
 	/* Precharge to Precharge Delay stays at 1 clock */
 	temp_drt |= (0 << 18);
@@ -2153,6 +2152,7 @@ static void sdram_on_die_termination(struct sys_info *sysinfo)
 	reg32 |= (1 << 14) | (1 << 6) | (2 << 16);
 	MCHBAR32(ODTC) = reg32;
 
+	/* Channel 0 */
 	if ((sysinfo->dimm[0] == SYSINFO_DIMM_NOT_POPULATED &&
 	     sysinfo->dimm[1] != SYSINFO_DIMM_NOT_POPULATED) ||
 	    (sysinfo->dimm[0] != SYSINFO_DIMM_NOT_POPULATED &&
@@ -2164,6 +2164,7 @@ static void sdram_on_die_termination(struct sys_info *sysinfo)
 		MCHBAR32(C0ODT) = reg32;
 	}
 
+	/* Channel 1 */
 	if ((sysinfo->dimm[2] == SYSINFO_DIMM_NOT_POPULATED &&
 	     sysinfo->dimm[3] != SYSINFO_DIMM_NOT_POPULATED) ||
 	    (sysinfo->dimm[2] != SYSINFO_DIMM_NOT_POPULATED &&
@@ -2202,17 +2203,18 @@ static void sdram_enable_memory_clocks(struct sys_info *sysinfo)
 {
 	u8 clocks[2] = { 0, 0 };
 
+#define CLOCKS_WIDTH 3
 	if (sysinfo->dimm[0] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[0] |= (1 << 3) - 1;
+		clocks[0] |= (1 << CLOCKS_WIDTH) - 1;
 
 	if (sysinfo->dimm[1] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[0] |= ((1 << 3) - 1) << 3;
+		clocks[0] |= ((1 << CLOCKS_WIDTH) - 1) << CLOCKS_WIDTH;
 
 	if (sysinfo->dimm[2] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[1] |= (1 << 3) - 1;
+		clocks[1] |= (1 << CLOCKS_WIDTH) - 1;
 
 	if (sysinfo->dimm[3] != SYSINFO_DIMM_NOT_POPULATED)
-		clocks[1] |= ((1 << 3) - 1) << 3;
+		clocks[1] |= ((1 << CLOCKS_WIDTH) - 1) << CLOCKS_WIDTH;
 
 #if CONFIG(OVERRIDE_CLOCK_DISABLE)
 	/* Usually system firmware turns off system memory clock signals to unused SO-DIMM slots
