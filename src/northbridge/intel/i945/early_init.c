@@ -174,7 +174,7 @@ static void i945_setup_bars(void)
 	printk(BIOS_DEBUG, "Waiting for MCHBAR to come up...");
 	if ((pci_read_config32(HOST_BRIDGE, 0xe4) & 0x20000) == 0x00) { /* Bit 49 of CAPID0 */
 		do {
-			reg8 = *(volatile u8 *)0xfed40000;
+			reg8 = *(volatile u8 *)TPM_BASE_ADDRESS;
 		} while (!(reg8 & 0x80));
 	}
 	printk(BIOS_DEBUG, "ok\n");
