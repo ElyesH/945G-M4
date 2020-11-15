@@ -1,5 +1,8 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 
+#include "../haswell.h"
+#include <southbridge/intel/common/rcba.h>
+
 Name (_HID, EISAID ("PNP0A08"))	// PCIe
 Name (_CID, EISAID ("PNP0A03"))	// PCI
 
@@ -12,71 +15,10 @@ Device (MCHC)
 	OperationRegion (MCHP, PCI_Config, 0x00, 0x100)
 	Field (MCHP, DWordAcc, NoLock, Preserve)
 	{
-		Offset (0x40),	// EPBAR
-		EPEN,	 1,	// Enable
-		,	11,	//
-		EPBR,	27,	// EPBAR
-
-		Offset (0x48),	// MCHBAR
-		MHEN,	 1,	// Enable
-		,	14,	//
-		MHBR,	24,	// MCHBAR
-		Offset (0x54),
-		DVEN,	32,
-		Offset (0x60),	// PCIe BAR
-		PXEN,	 1,	// Enable
-		PXSZ,	 2,	// BAR size
-		,	23,	//
-		PXBR,	13,	// PCIe BAR
-
-		Offset (0x68),	// DMIBAR
-		DMEN,	 1,	// Enable
-		,	11,	//
-		DMBR,	27,	// DMIBAR
-
 		Offset (0x70),	// ME Base Address
 		MEBA,	 64,
-
-		// ...
-
-		Offset (0x80),	// PAM0
-		,	 4,
-		PM0H,	 2,
-		,	 2,
-		Offset (0x81),	// PAM1
-		PM1L,	 2,
-		,	 2,
-		PM1H,	 2,
-		,	 2,
-		Offset (0x82),	// PAM2
-		PM2L,	 2,
-		,	 2,
-		PM2H,	 2,
-		,	 2,
-		Offset (0x83),	// PAM3
-		PM3L,	 2,
-		,	 2,
-		PM3H,	 2,
-		,	 2,
-		Offset (0x84),	// PAM4
-		PM4L,	 2,
-		,	 2,
-		PM4H,	 2,
-		,	 2,
-		Offset (0x85),	// PAM5
-		PM5L,	 2,
-		,	 2,
-		PM5H,	 2,
-		,	 2,
-		Offset (0x86),	// PAM6
-		PM6L,	 2,
-		,	 2,
-		PM6H,	 2,
-		,	 2,
-
 		Offset (0xa0),	// Top of Used Memory
 		TOM,	 64,
-
 		Offset (0xbc),	// Top of Low Used Memory
 		TLUD,	 32,
 	}
@@ -226,5 +168,39 @@ Method (_CRS, 0, Serialized)
 	Return (MCRS)
 }
 
+/* PCI Device Resource Consumption */
+Device (PDRC)
+{
+	Name (_HID, EISAID ("PNP0C02"))
+	Name (_UID, 1)
+
+	Name (PDRS, ResourceTemplate () {
+		Memory32Fixed (ReadWrite, DEFAULT_RCBA, 0x00004000)
+		Memory32Fixed (ReadWrite, DEFAULT_MCHBAR,   0x00008000)
+		Memory32Fixed (ReadWrite, DEFAULT_DMIBAR,   0x00001000)
+		Memory32Fixed (ReadWrite, DEFAULT_EPBAR,    0x00001000)
+		Memory32Fixed (ReadWrite, CONFIG_MMCONF_BASE_ADDRESS, 0x04000000)
+		Memory32Fixed (ReadWrite, 0xfed20000, 0x00020000) // Misc ICH
+		Memory32Fixed (ReadWrite, 0xfed40000, 0x00005000) // Misc ICH
+		Memory32Fixed (ReadWrite, 0xfed45000, 0x0004b000) // Misc ICH
+
+#if CONFIG(CHROMEOS_RAMOOPS)
+		Memory32Fixed (ReadWrite, CONFIG_CHROMEOS_RAMOOPS_RAM_START,
+					  CONFIG_CHROMEOS_RAMOOPS_RAM_SIZE)
+#endif
+	})
+
+	// Current Resource Settings
+	Method (_CRS, 0, Serialized)
+	{
+		Return (PDRS)
+	}
+}
+
 /* Configurable TDP */
 #include "ctdp.asl"
+
+#if !CONFIG(INTEL_LYNXPOINT_LP)
+/* PCI Express Graphics */
+#include "peg.asl"
+#endif
