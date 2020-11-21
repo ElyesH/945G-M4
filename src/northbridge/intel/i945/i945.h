@@ -13,6 +13,7 @@
 #define DEFAULT_DMIBAR		0xfed18000	/* 4 KB */
 #endif
 #define DEFAULT_EPBAR		0xfed19000	/* 4 KB */
+#define TPM_BASE_ADDRESS	0xfed40000
 
 #include <southbridge/intel/i82801gx/i82801gx.h>
 
