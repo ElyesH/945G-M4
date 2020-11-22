@@ -49,6 +49,7 @@ static void model_f6x_init(struct device *cpu)
 
 	/* Configure Enhanced SpeedStep and Thermal Sensors */
 	configure_misc();
+
 };
 
 static struct device_operations cpu_dev_ops = {
