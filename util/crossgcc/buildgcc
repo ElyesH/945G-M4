@@ -43,7 +43,7 @@ PYTHON_VERSION=3.9.1
 EXPAT_VERSION=2.2.10
 # CLANG version number
 CLANG_VERSION=11.0.0
-CMAKE_VERSION=3.18.1
+CMAKE_VERSION=3.19.3
 NASM_VERSION=2.15.05
 
 # GCC toolchain archive locations
@@ -64,7 +64,7 @@ LLVM_ARCHIVE="https://github.com/llvm/llvm-project/releases/download/llvmorg-${C
 CLANG_ARCHIVE="https://github.com/llvm/llvm-project/releases/download/llvmorg-${CLANG_VERSION}/clang-${CLANG_VERSION}.src.tar.xz"
 CRT_ARCHIVE="https://github.com/llvm/llvm-project/releases/download/llvmorg-${CLANG_VERSION}/compiler-rt-${CLANG_VERSION}.src.tar.xz"
 CTE_ARCHIVE="https://github.com/llvm/llvm-project/releases/download/llvmorg-${CLANG_VERSION}/clang-tools-extra-${CLANG_VERSION}.src.tar.xz"
-CMAKE_ARCHIVE="https://cmake.org/files/v3.18/cmake-${CMAKE_VERSION}.tar.gz"
+CMAKE_ARCHIVE="https://cmake.org/files/v$(echo ${CMAKE_VERSION} | cut -d. -f-2)/cmake-${CMAKE_VERSION}.tar.gz"
 NASM_ARCHIVE="https://www.nasm.us/pub/nasm/releasebuilds/${NASM_VERSION}/nasm-${NASM_VERSION}.tar.bz2"
 
 ALL_ARCHIVES="$GMP_ARCHIVE $MPFR_ARCHIVE $MPC_ARCHIVE \
