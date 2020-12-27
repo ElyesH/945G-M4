@@ -36,7 +36,6 @@ GMP_VERSION=6.2.0
 MPFR_VERSION=4.1.0
 MPC_VERSION=1.2.0
 GCC_VERSION=8.3.0
-GCC_AUTOCONF_VERSION=2.69
 BINUTILS_VERSION=2.35.1
 GDB_VERSION=9.2
 IASL_VERSION=20200925
@@ -898,7 +897,6 @@ build_NASM() {
 
 print_supported() {
 	case "$PRINTSUPPORTED" in
-		AUTOCONF|autoconf)  printf "%s\n" "$GCC_AUTOCONF_VERSION";;
 		BINUTILS|binutils)  printf "%s\n" "$BINUTILS_VERSION";;
 		CLANG|clang)  printf "%s\n" "$CLANG_VERSION";;
 		EXPAT|expat)  printf "%s\n" "$EXPAT_VERSION";;
