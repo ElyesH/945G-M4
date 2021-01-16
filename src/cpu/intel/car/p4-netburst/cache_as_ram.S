@@ -11,6 +11,8 @@
 .section .init
 .global bootblock_pre_c_entry
 
+#include <cpu/intel/car/cache_as_ram_symbols.inc>
+
 .code32
 _cache_as_ram_setup:
 
@@ -212,7 +214,7 @@ sipi_complete:
 
 	/* Set Cache-as-RAM base address. */
 	movl	$(MTRR_PHYS_BASE(0)), %ecx
-	movl	$_car_mtrr_start, %eax
+	movl	car_mtrr_start, %eax
 	orl	$MTRR_TYPE_WRBACK, %eax
 	xorl	%edx, %edx
 	wrmsr
@@ -220,7 +222,7 @@ sipi_complete:
 	/* Set Cache-as-RAM mask. */
 	movl	$(MTRR_PHYS_MASK(0)), %ecx
 	rdmsr
-	movl	$_car_mtrr_mask, %eax
+	mov	car_mtrr_mask, %eax
 	orl	$MTRR_PHYS_MASK_VALID, %eax
 	wrmsr
 
@@ -272,12 +274,12 @@ no_msr_11e:
 	/* Cache the whole rom to fetch microcode updates */
 	movl	$MTRR_PHYS_BASE(1), %ecx
 	xorl	%edx, %edx
-	movl	$_rom_mtrr_base, %eax
+	mov	rom_mtrr_base, %eax
 	orl	$MTRR_TYPE_WRPROT, %eax
 	wrmsr
 	movl	$MTRR_PHYS_MASK(1), %ecx
 	rdmsr
-	movl	$_rom_mtrr_mask, %eax
+	mov	rom_mtrr_mask, %eax
 	orl	$MTRR_PHYS_MASK_VALID, %eax
 	wrmsr
 
@@ -288,11 +290,11 @@ no_msr_11e:
 	movl	%eax, %cr0
 
 #if CONFIG(MICROCODE_UPDATE_PRE_RAM)
-	update_microcode:
+update_microcode:
 	/* put the return address in %esp */
 	movl	$end_microcode_update, %esp
 	jmp	update_bsp_microcode
-	end_microcode_update:
+end_microcode_update:
 #endif
 	post_code(0x2d)
 	/* Disable caching to change MTRR's. */
@@ -324,12 +326,12 @@ cache_rom:
 	movl	$MTRR_PHYS_BASE(1), %ecx
 	xorl	%edx, %edx
 	movl	$_program, %eax
-	andl	$_xip_mtrr_mask, %eax
+	and	xip_mtrr_mask, %eax
 	orl	$MTRR_TYPE_WRPROT, %eax
 	wrmsr
 	movl	$MTRR_PHYS_MASK(1), %ecx
 	rdmsr
-	movl	$_xip_mtrr_mask, %eax
+	mov	xip_mtrr_mask, %eax
 	orl	$MTRR_PHYS_MASK_VALID, %eax
 	wrmsr
 
@@ -344,8 +346,8 @@ fill_cache:
 	/* Clear the cache memory region. This will also fill up the cache. */
 	cld
 	xorl	%eax, %eax
-	movl	$_car_mtrr_start, %edi
-	movl	$_car_mtrr_size, %ecx
+	movl	car_mtrr_start, %edi
+	movl	car_mtrr_size, %ecx
 	shr	$2, %ecx
 	rep	stosl
 
@@ -355,8 +357,17 @@ fill_cache:
 	/* Need to align stack to 16 bytes at call instruction. Account for
 	the pushes below. */
 	andl	$0xfffffff0, %esp
-	subl	$4, %esp
 
+#if ENV_X86_64
+	#include <cpu/x86/64bit/entry64.inc>
+
+	movd	%mm2, %rdi
+	shlq	$32, %rdi
+	movd	%mm1, %rsi
+	or	%rsi, %rdi
+	movd	%mm0, %rsi
+#else
+	subl	$4, %esp
 	/* push TSC and BIST to stack */
 	movd	%mm0, %eax
 	pushl	%eax	/* BIST */
@@ -364,6 +375,7 @@ fill_cache:
 	pushl	%eax	/* tsc[63:32] */
 	movd	%mm1, %eax
 	pushl	%eax	/* tsc[31:0] */
+#endif
 
 before_c_entry:
 	post_code(0x2f)

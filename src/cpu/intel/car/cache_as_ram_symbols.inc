@@ -18,3 +18,11 @@ car_mtrr_mask:
 
 car_mtrr_start:
 .uintptr_t _car_mtrr_start
+
+car_mtrr_size:
+.uintptr_t _car_mtrr_size
+
+#if !CONFIG(NO_XIP_EARLY_STAGES)
+xip_mtrr_mask:
+.uintptr_t _xip_mtrr_mask
+#endif
