@@ -6,19 +6,18 @@ config ARCH_X86
 	select RELOCATABLE_MODULES
 	select HAVE_ASAN_IN_RAMSTAGE
 
+if ARCH_X86
+
 # stage selectors for x86
 
 config ARCH_BOOTBLOCK_X86_32
 	bool
-	select ARCH_X86
 
 config ARCH_VERSTAGE_X86_32
 	bool
-	select ARCH_X86
 
 config ARCH_ROMSTAGE_X86_32
 	bool
-	select ARCH_X86
 
 config ARCH_POSTCAR_X86_32
 	bool
@@ -26,7 +25,6 @@ config ARCH_POSTCAR_X86_32
 
 config ARCH_RAMSTAGE_X86_32
 	bool
-	select ARCH_X86
 
 config ARCH_ALL_STAGES_X86_32
 	bool
@@ -39,15 +37,12 @@ config ARCH_ALL_STAGES_X86_32
 
 config ARCH_BOOTBLOCK_X86_64
 	bool
-	select ARCH_X86
 
 config ARCH_VERSTAGE_X86_64
 	bool
-	select ARCH_X86
 
 config ARCH_ROMSTAGE_X86_64
 	bool
-	select ARCH_X86
 
 config ARCH_POSTCAR_X86_64
 	bool
@@ -55,7 +50,6 @@ config ARCH_POSTCAR_X86_64
 
 config ARCH_RAMSTAGE_X86_64
 	bool
-	select ARCH_X86
 
 config ARCH_ALL_STAGES_X86_64
 	bool
@@ -64,7 +58,11 @@ config ARCH_ALL_STAGES_X86_64
 	select ARCH_ROMSTAGE_X86_64
 	select ARCH_RAMSTAGE_X86_64
 
-if ARCH_X86
+config EXPERIMENTAL_X86_64
+	bool "TESTING ONLY - Enable experimental 64bit support"
+	default n
+	help
+	  This is not supported yet. Select only for X86_64 testing.
 
 config ARCH_X86_64_PGTBL_LOC
 	hex "x86_64 page table location in CBFS"
@@ -86,11 +84,10 @@ config USE_MARCH_586
 config AP_IN_SIPI_WAIT
 	bool
 	default n
-	depends on ARCH_X86 && SMP
+	depends on SMP
 
 config RESET_VECTOR_IN_RAM
 	bool
-	depends on ARCH_X86
 	select NO_XIP_EARLY_STAGES
 	help
 	  Select this option if the x86 processor's reset vector is in
@@ -101,7 +98,6 @@ config RESET_VECTOR_IN_RAM
 config SIPI_VECTOR_IN_ROM
 	bool
 	default n
-	depends on ARCH_X86
 
 # Set the rambase for systems that still need it, only 5 chipsets as of
 # Sep 2018. This value was 0x100000, chosen to match the entry point
@@ -117,7 +113,6 @@ config RAMBASE
 config RAMTOP
 	hex
 	default 0x1000000
-	depends on ARCH_X86
 
 # Traditionally BIOS region on SPI flash boot media was memory mapped right below
 # 4G and it was the last region in the IFD. This way translation between CPU
@@ -153,7 +148,7 @@ config CBFS_MCACHE_SIZE
 
 config PC80_SYSTEM
 	bool
-	default y if ARCH_X86
+	default y
 
 config BOOTBLOCK_DEBUG_SPINLOOP
 	bool
@@ -211,7 +206,6 @@ config VERSTAGE_ADDR
 # from a program loaded in RAM and subsequently loading ramstage.
 config POSTCAR_STAGE
 	def_bool y
-	depends on ARCH_X86
 	depends on !RESET_VECTOR_IN_RAM
 
 config VERSTAGE_DEBUG_SPINLOOP
@@ -275,7 +269,6 @@ config COLLECT_TIMESTAMPS_TSC
 config PAGING_IN_CACHE_AS_RAM
 	bool
 	default n
-	depends on ARCH_X86
 	help
 	  Chipsets scan select this option to preallocate area in cache-as-ram
 	  for storing paging data structures. PAE paging is currently the
@@ -293,7 +286,6 @@ config NUM_CAR_PAGE_TABLE_PAGES
 config IDT_IN_EVERY_STAGE
 	bool
 	default n
-	depends on ARCH_X86
 
 config HAVE_CF9_RESET
 	bool
@@ -328,4 +320,4 @@ config MEMLAYOUT_LD_FILE
 	string
 	default "src/arch/x86/memlayout.ld"
 
-endif
+endif # ARCH_X86
