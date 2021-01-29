@@ -135,7 +135,7 @@ static void i945_detect_chipset(void)
 
 static void i945_setup_bars(void)
 {
-	u8 reg8, gfxsize;
+	u8 reg8;//, gfxsize;
 
 	/* As of now, we don't have all the A0 workarounds implemented */
 	if (i945_silicon_revision() == 0)
@@ -149,12 +149,13 @@ static void i945_setup_bars(void)
 	pci_write_config32(HOST_BRIDGE, X60BAR, DEFAULT_X60BAR | 1);
 
 	/* vram size from CMOS option */
-	if (get_option(&gfxsize, "gfx_uma_size") != CB_SUCCESS)
-		gfxsize = 2;	/* 2 for 8MB */
+//	if (get_option(&gfxsize, "gfx_uma_size") != CB_SUCCESS)
+//		gfxsize = 2;	/* 2 for 8MB */
 	/* make sure no invalid setting is used */
-	if (gfxsize > 6)
-		gfxsize = 2;
-	pci_write_config16(HOST_BRIDGE, GGC, ((gfxsize + 1) << 4));
+//	if (gfxsize > 6)
+//		gfxsize = 2;
+//	pci_write_config16(HOST_BRIDGE, GGC, ((gfxsize + 1) << 4));
+	pci_write_config16(PCI_DEV(0, 0x00, 0), GGC, (0 << 4));
 	/* TSEG 2M, This amount can easily be covered by SMRR MTRR's,
 	   which requires to have TSEG_BASE aligned to TSEG_SIZE. */
 	pci_update_config8(HOST_BRIDGE, ESMRAMC, ~0x07, (1 << 1) | (1 << 0));
@@ -817,7 +818,7 @@ void i945_late_initialization(int s3resume)
 
 	i945_setup_dmi_rcrb();
 
-	if (CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM))
+//	if (CONFIG(NORTHBRIDGE_INTEL_SUBTYPE_I945GM))
 		i945_setup_pci_express_x16();
 
 	i945_setup_root_complex_topology();

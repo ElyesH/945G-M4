@@ -1,0 +1,4 @@
+config CPU_INTEL_MODEL_F6X
+	bool
+	select SSE2
+	select SUPPORT_CPU_UCODE_IN_CBFS
